@@ -37,11 +37,6 @@ var numLookup = map[string]int{
 }
 
 func partTwo() {
-	keys := make([]string, len(numLookup))
-	for k, _ := range numLookup {
-		keys = append(keys, k)
-	}
-
 	file, err := os.Open("./input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +54,6 @@ func partTwo() {
 			continue
 		}
 		tot := int64(nums[0]*10) + int64(nums[len(nums)-1])
-		fmt.Printf("Value: %v in line %v\n", tot, line)
 		res = res + tot
 	}
 
@@ -83,7 +77,7 @@ func ScanLine(line string) []int {
 			}
 		}
 	}
-	fmt.Printf("Numbers found %v in line %v", res, line)
+	fmt.Printf("Numbers found %v in liddne %v", res, line)
 	return res
 }
 
