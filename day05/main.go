@@ -26,7 +26,7 @@ type PlantingMap struct {
 }
 
 func (p *PlantingMap) FindNext(input int) int {
-	fmt.Printf("%d -> %s ", input, p.Name)
+	// fmt.Printf("%d -> %s ", input, p.Name)
 	for _, r := range p.Ranges {
 		if input >= r.Source && input < r.Source+r.Range {
 			return r.Dest + (input - r.Source)
@@ -39,12 +39,12 @@ func (p *PlantingMap) FindNext(input int) int {
 func (a *Almanac) SeedToLocation(source int) int {
 	curr := a.Head
 	in := source
-	fmt.Println("")
+	// fmt.Println("")
 	for curr != nil {
 		in = curr.FindNext(in)
 		curr = curr.Next
 	}
-	fmt.Printf("-> %d", in)
+	// fmt.Printf("-> %d", in)
 	return in
 }
 
@@ -88,10 +88,10 @@ func main() {
 
 	res := math.MaxInt
 
-	seeds := make([]int, 0)
+	seedRanges := make([]int, 0)
 	for linescanner.Scan() {
 		line := linescanner.Text()
-		fmt.Println(line)
+		// fmt.Println(line)
 
 		if line == "" {
 			continue
@@ -101,7 +101,7 @@ func main() {
 		if fields[0] == "seeds" {
 			for _, token := range strings.Fields(fields[1]) {
 				if v, err := strconv.Atoi(token); err == nil {
-					seeds = append(seeds, v)
+					seedRanges = append(seedRanges, v)
 				}
 			}
 			continue
@@ -123,10 +123,27 @@ func main() {
 		}
 	}
 
-	for _, s := range seeds {
-		if loc := al.SeedToLocation(s); loc < res {
-			res = loc
+	// seeds := make([]int, 0)
+	seeds := make(map[int]interface{})
+	for i := range seedRanges {
+		if i%2 == 1 {
+			start := seedRanges[i-1]
+			fmt.Printf("starting new seeds range %d\n", (i+1)/2)
+			for j := 0; j < seedRanges[i]; j++ {
+				seed := start + j
+				if _, ok := seeds[seed]; !ok {
+					if loc := al.SeedToLocation(seed); loc < res {
+						res = loc
+					}
+				}
+			}
 		}
 	}
+	// for _, s := range seeds {
+	// 	fmt.Printf("Finding seed location for %d\n", s)
+	// 	if loc := al.SeedToLocation(s); loc < res {
+	// 		res = loc
+	// 	}
+	// }
 	fmt.Printf("\nLocation %d", res)
 }
