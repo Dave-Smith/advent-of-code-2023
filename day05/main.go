@@ -11,7 +11,6 @@ import (
 
 type Almanac struct {
 	Head *PlantingMap
-	// Maps map[string]PlantingMap
 }
 
 type FarmRange struct {
@@ -26,34 +25,32 @@ type PlantingMap struct {
 	Next   *PlantingMap
 }
 
-func (p *PlantingMap) FindNext(source int) int {
-	fmt.Printf("%s ", p.Name)
+func (p *PlantingMap) FindNext(input int) int {
+	fmt.Printf("%d -> %s ", input, p.Name)
 	for _, r := range p.Ranges {
-		if source >= r.Source && source < r.Source+r.Range {
-			return r.Dest + (source - r.Source)
+		if input >= r.Source && input < r.Source+r.Range {
+			return r.Dest + (input - r.Source)
 		}
 	}
 
-	return source
+	return input
 }
 
 func (a *Almanac) SeedToLocation(source int) int {
-	curr := *a.Head
+	curr := a.Head
 	in := source
 	fmt.Println("")
-	for curr.Next != nil {
-		fmt.Printf("%d -> ", in)
-		in = curr.Next.FindNext(in)
-		curr = *curr.Next
+	for curr != nil {
+		in = curr.FindNext(in)
+		curr = curr.Next
 	}
+	fmt.Printf("-> %d", in)
 	return in
 }
 
 func NewAlmanac() Almanac {
-	// maps := make(map[string]PlantingMap)
 	return Almanac{
 		NewPlantingMap(""),
-		// maps,
 	}
 }
 
@@ -68,7 +65,6 @@ func (a *Almanac) NextPlantingMap(name string) {
 	}
 	next := NewPlantingMap(name)
 	curr.Next = next
-	// a.Maps[name] = *next
 }
 
 func (a *Almanac) AddRange(rng FarmRange) {
@@ -125,13 +121,10 @@ func main() {
 		if len(rng) == 3 {
 			al.AddRange(FarmRange{rng[0], rng[1], rng[2]})
 		}
-
-		// fmt.Printf("Seed 79, soil 81, fertilizer 81, water 81, light 74, temperature 78, humidity 78, location 82\n")
 	}
-	fmt.Println(al)
 
 	for _, s := range seeds {
-		if loc := al.SeedToLocation(s); s < res {
+		if loc := al.SeedToLocation(s); loc < res {
 			res = loc
 		}
 	}
