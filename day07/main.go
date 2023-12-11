@@ -101,6 +101,9 @@ func scoreHand(cards []string) int {
 
 func highestNonJ(hand map[string]int) string {
 	cloned := maps.Clone(hand)
+	for k, v := range cloned {
+		cloned[k] = cardValue[k] * hand[k]
+	}
 	for k, v := range hand {
 		if k == "J" {
 			continue
